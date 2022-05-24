@@ -20,7 +20,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    console.log("database connected");
+    const toolCollection = client.db("drills-world").collection("tools");
+    const reviewCollection = client.db("drills-world").collection("reviews");
+
+    app.get("/tool", async (req, res) => {
+      const query = {};
+      const cursor = toolCollection.find(query);
+      const tools = await cursor.toArray();
+      res.send(tools);
+    });
   } finally {
   }
 }
