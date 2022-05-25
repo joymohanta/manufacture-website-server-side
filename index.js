@@ -25,6 +25,7 @@ async function run() {
     const orderCollection = client.db("drills-world").collection("order");
     const reviewCollection = client.db("drills-world").collection("reviews");
     const userCollection = client.db("drills-world").collection("users");
+    const profileCollection = client.db("drills-world").collection("profile");
 
     // Get all tools
     app.get("/tool", async (req, res) => {
@@ -38,6 +39,23 @@ async function run() {
       const allUsers = await userCollection.find().toArray();
       res.send(allUsers);
     });
+
+    // Put detail profile users
+    // app.put("/profile", async (req, res) => {
+    //   // const email = req.params.email;
+    //   const detail = req.body;
+    //   const filter = { email: email };
+    //   const options = { upsert: true };
+    //   const updateDoc = {
+    //     $set: detail,
+    //   };
+    //   const result = await profileCollection.updateOne(
+    //     filter,
+    //     updateDoc,
+    //     options
+    //   );
+    //   res.send({ result, token });
+    // });
 
     // Put method for get all users
     app.put("/user/:email", async (req, res) => {
@@ -96,6 +114,13 @@ async function run() {
     app.post("/order", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
+      res.send(result);
+    });
+
+    // profile post
+    app.post("/profile", async (req, res) => {
+      const detail = req.body;
+      const result = await profileCollection.insertOne(detail);
       res.send(result);
     });
 
