@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
@@ -23,6 +24,7 @@ async function run() {
     const toolCollection = client.db("drills-world").collection("tools");
     const orderCollection = client.db("drills-world").collection("order");
     const reviewCollection = client.db("drills-world").collection("reviews");
+    const userCollection = client.db("drills-world").collection("users");
 
     // Get all tools
     app.get("/tool", async (req, res) => {
@@ -30,6 +32,24 @@ async function run() {
       const cursor = toolCollection.find(query);
       const tools = await cursor.toArray();
       res.send(tools);
+    });
+
+    // Put method for get all users
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      const token = jwt.sign(
+        { email: email },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+      res.send({ result, token });
     });
 
     // Get and findOne tool
