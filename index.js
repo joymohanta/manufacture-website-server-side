@@ -40,23 +40,6 @@ async function run() {
       res.send(allUsers);
     });
 
-    // Put detail profile users
-    // app.put("/profile", async (req, res) => {
-    //   // const email = req.params.email;
-    //   const detail = req.body;
-    //   const filter = { email: email };
-    //   const options = { upsert: true };
-    //   const updateDoc = {
-    //     $set: detail,
-    //   };
-    //   const result = await profileCollection.updateOne(
-    //     filter,
-    //     updateDoc,
-    //     options
-    //   );
-    //   res.send({ result, token });
-    // });
-
     // Put method for get all users
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
@@ -111,13 +94,20 @@ async function run() {
     });
 
     // Create a tool Order Post
-    app.post("/order", async (req, res) => {
-      const order = req.body;
-      const result = await orderCollection.insertOne(order);
+    app.post("/tool", async (req, res) => {
+      const itemDetail = req.body;
+      const result = await toolCollection.insertOne(itemDetail);
       res.send(result);
     });
 
     // profile post
+    app.post("/profile", async (req, res) => {
+      const detail = req.body;
+      const result = await profileCollection.insertOne(detail);
+      res.send(result);
+    });
+
+    // Create another Tools
     app.post("/profile", async (req, res) => {
       const detail = req.body;
       const result = await profileCollection.insertOne(detail);
