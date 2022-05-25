@@ -93,10 +93,17 @@ async function run() {
       res.send(reviews);
     });
 
-    // Create a tool Order Post
+    // Create a tool Order Posttttttttttttttttt
     app.post("/tool", async (req, res) => {
       const itemDetail = req.body;
       const result = await toolCollection.insertOne(itemDetail);
+      res.send(result);
+    });
+
+    // Place a order post newwwwwwwwwwwwwwww
+    app.post("/order", async (req, res) => {
+      const order = req.body;
+      const result = await orderCollection.insertOne(order);
       res.send(result);
     });
 
