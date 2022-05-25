@@ -21,8 +21,10 @@ async function run() {
   try {
     await client.connect();
     const toolCollection = client.db("drills-world").collection("tools");
+    const orderCollection = client.db("drills-world").collection("order");
     const reviewCollection = client.db("drills-world").collection("reviews");
 
+    // Get all tools
     app.get("/tool", async (req, res) => {
       const query = {};
       const cursor = toolCollection.find(query);
@@ -30,6 +32,7 @@ async function run() {
       res.send(tools);
     });
 
+    // Get and findOne tool
     app.get("/tool/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -37,11 +40,19 @@ async function run() {
       res.send(tool);
     });
 
+    // Get all reviews
     app.get("/review", async (req, res) => {
       const query = {};
       const cursor = reviewCollection.find(query);
       const reviews = await cursor.toArray();
       res.send(reviews);
+    });
+
+    // Create a tool Order Post
+    app.post("/order", async (req, res) => {
+      const order = req.body;
+      const result = await orderCollection.insertOne(order);
+      res.send(result);
     });
   } finally {
   }
