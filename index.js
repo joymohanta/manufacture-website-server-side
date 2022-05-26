@@ -109,6 +109,14 @@ async function run() {
       res.send(reviews);
     });
 
+    // Get all order
+    app.get("/order", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
     // Create a tool Order Posttttttttttttttttt
     app.post("/tool", async (req, res) => {
       const itemDetail = req.body;
