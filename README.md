@@ -10,3 +10,5 @@ Tachnical Features are
 - React Firebase Hooks
 - React Countup
 - TailwindCSS & Component Library Daisy UI
+- CRUD, Cors, Mongodb, jwt
+- React Query

@@ -123,6 +123,13 @@ async function run() {
       res.send(result);
     });
 
+    // Add a feedback Review
+    app.post("/review", async (req, res) => {
+      const feedback = req.body;
+      const result = await reviewCollection.insertOne(feedback);
+      res.send(result);
+    });
+
     // profile post
     app.post("/profile", async (req, res) => {
       const detail = req.body;
