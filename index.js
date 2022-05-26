@@ -3,6 +3,8 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -26,6 +28,7 @@ async function run() {
     const reviewCollection = client.db("drills-world").collection("reviews");
     const userCollection = client.db("drills-world").collection("users");
     const profileCollection = client.db("drills-world").collection("profile");
+    const paymentCollection = client.db("drills-world").collection("payments");
 
     // Get all tools
     app.get("/tool", async (req, res) => {
@@ -56,6 +59,19 @@ async function run() {
         { expiresIn: "1h" }
       );
       res.send({ result, token });
+    });
+
+    // Payment intent Api
+    app.post("/create-payment-intent", async (req, res) => {
+      const service = req.body;
+      const totalPrice = service.totalPrice;
+      const amount = totalPrice * 100;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+      res.send({ clientSecret: paymentIntent.client_secret });
     });
 
     // Get Admin Pages
@@ -119,6 +135,22 @@ async function run() {
       const detail = req.body;
       const result = await profileCollection.insertOne(detail);
       res.send(result);
+    });
+
+    // Patch ordered product
+    app.patch("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const payment = req.body;
+      const filter = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          paid: true,
+          transactionId: payment.transactionId,
+        },
+      };
+      const result = await paymentCollection.insertOne(payment);
+      const updatedOrder = await orderCollection.updateOne(filter, updatedDoc);
+      res.send(updatedDoc);
     });
 
     // Payment api order
