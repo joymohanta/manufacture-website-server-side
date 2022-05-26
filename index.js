@@ -153,6 +153,14 @@ async function run() {
       res.send(updatedDoc);
     });
 
+    // Delete api for Orders
+    app.delete("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // Payment api order
     app.get("/order/:id", async (req, res) => {
       const id = req.params.id;
