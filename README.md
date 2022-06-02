@@ -12,3 +12,4 @@ Tachnical Features are
 - TailwindCSS & Component Library Daisy UI
 - CRUD, Cors, Mongodb, jwt
 - React Query
+There are so many commad you can use
